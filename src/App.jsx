@@ -54,7 +54,7 @@ export default function App() {
           onClick={()=>setPage("lab2")}
           style={{padding:15,fontSize:18}}
         >
-           עובדה 2 - נשימה תאית בשמרים
+          עבודה 2
         </button>
 
       </div>
