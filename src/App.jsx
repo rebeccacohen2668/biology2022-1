@@ -1,41 +1,63 @@
-import { useState } from 'react'
-import Lab1 from './pages/Lab1'
+import { useState } from "react"
+import Lab1 from "./pages/Lab1"
+import Lab2 from "./pages/Lab2"
 
 export default function App() {
 
-  const [page,setPage] = useState(null)
+  const [page, setPage] = useState(null)
 
   if(page === "lab1"){
     return (
       <div>
-        <div className="p-4 bg-stone-200 flex justify-between">
-          <button
-            onClick={()=>setPage(null)}
-            className="bg-stone-700 text-white px-4 py-2 rounded-lg"
-          >
-            חזרה לתפריט
-          </button>
-          <div className="font-bold">עבודה 1</div>
-        </div>
+        <button
+          onClick={()=>setPage(null)}
+          style={{margin:20,padding:10}}
+        >
+          חזרה לתפריט
+        </button>
 
         <Lab1/>
       </div>
     )
   }
 
+  if(page === "lab2"){
+    return (
+      <div>
+        <button
+          onClick={()=>setPage(null)}
+          style={{margin:20,padding:10}}
+        >
+          חזרה לתפריט
+        </button>
+
+        <Lab2/>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-orange-50 p-10 text-center">
+    <div style={{padding:40,fontFamily:"Rubik",direction:"rtl"}}>
 
-      <h1 className="text-4xl font-bold mb-10">
-        מאגר עבודות בביולוגיה
-      </h1>
+      <h1>עבודות ביולוגיה</h1>
 
-      <button
-        onClick={()=>setPage("lab1")}
-        className="bg-white border shadow p-6 rounded-xl text-xl"
-      >
-        עבודה 1 – פעילות אנזים קטלאז
-      </button>
+      <div style={{display:"flex",gap:20,marginTop:30}}>
+
+        <button
+          onClick={()=>setPage("lab1")}
+          style={{padding:15,fontSize:18}}
+        >
+          עבודה 1 – פעילות קטלאז
+        </button>
+
+        <button
+          onClick={()=>setPage("lab2")}
+          style={{padding:15,fontSize:18}}
+        >
+           עובדה 2 - נשימה תאית בשמרים
+        </button>
+
+      </div>
 
     </div>
   )
