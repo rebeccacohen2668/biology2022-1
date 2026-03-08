@@ -218,7 +218,7 @@ const PartA = () => {
               <div className="w-10 md:w-12 h-28 border-x-4 border-b-4 border-stone-400 relative overflow-hidden bg-white shadow-inner rounded-b-xl">
                 <div className={`absolute bottom-0 w-full transition-all duration-1000 border-t-2 border-stone-200 z-10 ${tube.isLentil && stage === 0 ? 'bg-amber-100' : tube.color}`} 
                      style={{ height: stage === 0 ? '25%' : stage === 1 ? '48%' : '52%' }}>
-                  {tube.isLentil && stage === 0 && <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-6 h-3 bg-amber-700/30 rounded-full blur-[1px]"></div>}
+                  {tube.isLentil && <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-6 h-3 bg-amber-800/50 rounded-full blur-[1px]"></div>}
                 </div>
                 {idx < 2 && showFoam && renderFoam(tube.foam)}
                 {idx < 2 && showBubbles && generateBubbles(tube.count)}
@@ -718,9 +718,9 @@ const PartC = () => {
         <table className="w-full text-center border-collapse text-sm md:text-base">
           <thead>
             <tr className="bg-amber-100 border-b-2 border-amber-200 text-amber-900">
-              <th className="p-2 border-l border-amber-200 w-1/3">ריכוז המלח (%)</th>
-              <th className="p-2 border-l border-amber-200 w-1/3">זן א'</th>
-              <th className="p-2 w-1/3">זן ב'</th>
+              <th className="p-1.5 border-l border-amber-200 w-1/3">ריכוז המלח (%)</th>
+              <th className="p-1.5 border-l border-amber-200 w-1/3">זן א'</th>
+              <th className="p-1.5 w-1/3">זן ב'</th>
             </tr>
           </thead>
           <tbody>
@@ -732,9 +732,9 @@ const PartC = () => {
               [1.0, 2.4, 4.7]
             ].map((row, i) => (
               <tr key={i} className="border-b hover:bg-stone-50">
-                <td className="p-2 border-l border-stone-200 font-bold">{row[0]}</td>
-                <td className="p-2 border-l border-stone-200">{row[1]}</td>
-                <td className="p-2">{row[2]}</td>
+                <td className="p-1.5 border-l border-stone-200 font-bold">{row[0]}</td>
+                <td className="p-1.5 border-l border-stone-200">{row[1]}</td>
+                <td className="p-1.5">{row[2]}</td>
               </tr>
             ))}
           </tbody>
@@ -769,34 +769,34 @@ const PartC = () => {
 
       <div className="bg-white p-4 md:p-5 border-2 border-stone-100 rounded-2xl shadow-md mb-6 flex flex-col items-center justify-center">
         <div className="text-right w-full mb-4 px-2">
-           <h4 className="font-bold text-stone-800 text-base md:text-lg mb-1">ניסוי 2:</h4>
+           <h4 className="font-bold text-stone-800 text-sm md:text-lg mb-1">ניסוי 2:</h4>
            <p className="text-stone-700 text-sm md:text-base">
              החוקרים בדקו את קצב הפעילות של האנזים קטלאז בשני הזנים של צמחי היבלית שהם גידלו.<br/>
              תוצאות הניסוי מתוארות בגרף שלהלן.
            </p>
         </div>
         
-        {/* הגרף עם כל המרכיבים */}
-        <div className="w-full max-w-3xl bg-white rounded-xl p-1 md:p-2 ltr border border-stone-100 relative">
-          <svg viewBox="0 0 650 350" className="w-full h-auto">
+        {/* הגרף עם כל המרכיבים (מקרא, כותרות צירים מלאות וכו') */}
+        <div className="w-full max-w-3xl bg-white rounded-xl p-2 overflow-x-auto ltr border border-stone-100 relative">
+          <svg viewBox="0 0 650 350" className="w-full h-auto min-w-[400px]">
             {/* כותרת הגרף */}
             <text x="280" y="25" fontSize="16" fill="#1c1917" textAnchor="middle" fontWeight="bold">
               השפעת ריכוזי מלח על קצב פעילות קטלאז בשני זנים של יבלית
             </text>
             
-            {/* מקרא מסודר - טקסט בצד ימין, סמלים בצד שמאל */}
-            <g transform="translate(540, 20)">
-              <rect x="0" y="0" width="90" height="65" fill="white" stroke="#ccc" rx="4"/>
+            {/* מקרא מסודר מימין לשמאל והוזז מחוץ לקווי הגרף */}
+            <g transform="translate(520, 30)">
+              <rect x="0" y="0" width="105" height="70" fill="white" stroke="#ccc" rx="4"/>
               
-              <text x="80" y="22" fontSize="13" fontWeight="bold" textAnchor="end" fill="#333">מקרא:</text>
+              <text x="80" y="22" fontSize="13" fontWeight="bold" textAnchor="middle" fill="#333" style={{ direction: 'rtl', unicodeBidi: 'bidi-override' }}>מקרא:</text>
               
-              <text x="80" y="42" fontSize="13" fill="#333" textAnchor="end">זן א'</text>
-              <path d="M 10 38 L 35 38" stroke="#d97706" strokeWidth="2" strokeDasharray="5,5" />
-              <circle cx="22.5" cy="38" r="4" fill="#fef3c7" stroke="#d97706" strokeWidth="2" />
+              <text x="85" y="44" fontSize="13" fill="#333" textAnchor="end" style={{ direction: 'rtl', unicodeBidi: 'bidi-override' }}>זן א'</text>
+              <path d="M 15 40 L 45 40" stroke="#d97706" strokeWidth="2" strokeDasharray="5,5" />
+              <circle cx="30" cy="40" r="4" fill="#fef3c7" stroke="#d97706" strokeWidth="2" />
               
-              <text x="80" y="58" fontSize="13" fill="#333" textAnchor="end">זן ב'</text>
-              <path d="M 10 54 L 35 54" stroke="#78350f" strokeWidth="2" />
-              <circle cx="22.5" cy="54" r="4" fill="#78350f" />
+              <text x="85" y="62" fontSize="13" fill="#333" textAnchor="end" style={{ direction: 'rtl', unicodeBidi: 'bidi-override' }}>זן ב'</text>
+              <path d="M 15 58 L 45 58" stroke="#78350f" strokeWidth="2" />
+              <circle cx="30" cy="58" r="4" fill="#78350f" />
             </g>
 
             <g stroke="#e5e7eb" strokeWidth="1">
