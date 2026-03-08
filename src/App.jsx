@@ -61,7 +61,7 @@ const customStyles = `
 `;
 
 // --- Multiple Choice Component ---
-const MultipleChoiceQnA = ({ qNum, question, options, correctAnswerIndex, explanation }) => {
+const MultipleChoiceQnA = ({ qNum, question, options, correctAnswerIndex, explanation, points, onAnswer }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -70,15 +70,22 @@ const MultipleChoiceQnA = ({ qNum, question, options, correctAnswerIndex, explan
   };
 
   const handleSubmit = () => {
-    if (selectedOption !== null) setIsSubmitted(true);
+    if (selectedOption !== null) {
+      setIsSubmitted(true);
+      const isCorrect = selectedOption === correctAnswerIndex;
+      if (onAnswer) {
+        onAnswer(qNum, isCorrect, points);
+      }
+    }
   };
 
   const isCorrect = selectedOption === correctAnswerIndex;
 
   return (
-    <div className="border border-stone-200 rounded-xl p-4 md:p-5 mb-6 bg-white shadow-sm hover:shadow-md transition-shadow">
+    <div className="border border-stone-200 rounded-xl p-4 md:p-5 mb-6 bg-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
       <div className="font-bold text-base md:text-lg mb-3 text-stone-800">
         שאלה {qNum}: <span className="font-normal whitespace-pre-line">{question}</span>
+        <span className="text-sm font-normal text-stone-500 mr-2 inline-block bg-stone-100 px-2 py-0.5 rounded-full">({points} נקודות)</span>
       </div>
       
       <div className="flex flex-col gap-2 mb-4">
@@ -115,15 +122,16 @@ const MultipleChoiceQnA = ({ qNum, question, options, correctAnswerIndex, explan
       </div>
 
       {!isSubmitted && (
-        <button onClick={handleSubmit} disabled={selectedOption === null} className="px-6 py-2 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors disabled:bg-stone-400 text-sm md:text-base">
+        <button onClick={handleSubmit} disabled={selectedOption === null} className="px-6 py-2 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors disabled:bg-stone-400 text-sm md:text-base shadow-sm">
           בדוק תשובה
         </button>
       )}
 
       {isSubmitted && (
         <div className={`mt-4 p-4 rounded-lg border-r-8 ${isCorrect ? 'bg-lime-50 border-lime-600' : 'bg-rose-50 border-rose-500'}`}>
-          <h4 className={`font-bold mb-1 text-base md:text-lg ${isCorrect ? 'text-lime-900' : 'text-rose-900'}`}>
+          <h4 className={`font-bold mb-1 text-base md:text-lg flex items-center gap-2 ${isCorrect ? 'text-lime-900' : 'text-rose-900'}`}>
             {isCorrect ? 'כל הכבוד! תשובה נכונה.' : 'תשובה שגויה. הסבר:'}
+            {isCorrect && <span className="bg-lime-200 text-lime-800 text-xs px-2 py-0.5 rounded-full">+{points} נק'</span>}
           </h4>
           <div className="text-stone-800 text-sm md:text-base whitespace-pre-line leading-relaxed">{explanation}</div>
         </div>
@@ -151,7 +159,7 @@ const Pipette = ({ activeLiquid }) => {
 };
 
 // --- Part A Component ---
-const PartA = () => {
+const PartA = ({ onAnswer }) => {
   const [stage, setStage] = useState(0);
   const [showFoam, setShowFoam] = useState(false);
   const [showBubbles, setShowBubbles] = useState(false);
@@ -254,6 +262,8 @@ const PartA = () => {
 
       <MultipleChoiceQnA 
         qNum="1. א" 
+        points={4}
+        onAnswer={onAnswer}
         question="מהי הכותרת המתאימה ביותר לטבלה המסכמת את מערך הניסוי שערכתם בחלק א'?" 
         options={[
           "השפעת ריכוז מי החמצן על קצב היווצרות הבועות במבחנות שונות.",
@@ -267,6 +277,8 @@ const PartA = () => {
 
       <MultipleChoiceQnA 
         qNum="1. ב" 
+        points={4}
+        onAnswer={onAnswer}
         question="על סמך התוצאות שהתקבלו באנימציה של הניסוי, מהו הדירוג הנכון של המבחנות לפי כמות הקצף שנוצר בהן (מהכמות הגדולה ביותר לכמות הקטנה ביותר או היעדר קצף)?" 
         options={[
           "מים > רסק עדשים > קטלאז",
@@ -280,6 +292,8 @@ const PartA = () => {
       
       <MultipleChoiceQnA 
         qNum="2. א" 
+        points={5}
+        onAnswer={onAnswer}
         question="מהו ההסבר הנכון לתוצאות שהתקבלו בכל אחת משלוש המבחנות?" 
         options={[
           "הסבון פירק את הקטלאז במבחנות והוביל ליצירת בועות.",
@@ -293,6 +307,8 @@ const PartA = () => {
 
       <MultipleChoiceQnA 
         qNum="2. ב" 
+        points={6}
+        onAnswer={onAnswer}
         question='מה היו עשויות להיות התוצאות במבחנה המסומנת "עדשים" אילו תמיסת מי החמצן שהוספתם הייתה בריכוז גבוה יותר, ומהו ההסבר לכך?' 
         options={[
           "קצב יצירת הקצף היה איטי הרבה יותר בגלל עיכוב תחרותי.",
@@ -306,6 +322,8 @@ const PartA = () => {
 
       <MultipleChoiceQnA 
         qNum="3." 
+        points={6}
+        onAnswer={onAnswer}
         question="נתון: תלמיד קיבל כלי ובו 10 מ''ל תמיסת מלח בריכוז 10%. התלמיד הוסיף לכלי 30 מ''ל מים מזוקקים. מהו ריכוז התמיסה שהתקבלה?" 
         options={["2.5%", "5%", "7.5%", "10%"]}
         correctAnswerIndex={0}
@@ -326,7 +344,7 @@ X = 2.5%
 };
 
 // --- Part B Component ---
-const PartB = () => {
+const PartB = ({ onAnswer }) => {
   const [stageB, setStageB] = useState(0); 
   const [animatingPipettesB, setAnimatingPipettesB] = useState(false);
   const [isBtnDisabledB, setIsBtnDisabledB] = useState(false);
@@ -556,6 +574,8 @@ const PartB = () => {
 
       <MultipleChoiceQnA 
         qNum="4" 
+        points={5}
+        onAnswer={onAnswer}
         question="בכל אחת מן המבחנות א-ד נערכו שלוש מדידות. מדוע חשוב לבצע חזרות בניסוי זה?" 
         options={[
           "ביצוע חזרות מאפשר להקטין את ההשפעה של טעות מקרית או של תוצאה חריגה.",
@@ -569,6 +589,8 @@ const PartB = () => {
 
       <MultipleChoiceQnA 
         qNum="5. א" 
+        points={4}
+        onAnswer={onAnswer}
         question="מהי הכותרת המתאימה ביותר לטבלה 2?" 
         options={[
           "השפעת ריכוז מי החמצן במבחנה על קצב פעילות האנזים קטלאז בזרעי שעועית.",
@@ -582,6 +604,8 @@ const PartB = () => {
 
       <MultipleChoiceQnA 
         qNum="5. ב" 
+        points={4}
+        onAnswer={onAnswer}
         question="מהו המשתנה הבלתי תלוי בניסוי שערכתם בחלק ב?" 
         options={[
           "משך הזמן שלקח לדסקיות הנייר לצוף בחזרה למעלה בכל אחת מן המדידות.",
@@ -595,6 +619,8 @@ const PartB = () => {
 
       <MultipleChoiceQnA 
         qNum="6. א" 
+        points={4}
+        onAnswer={onAnswer}
         question="מהו המשתנה התלוי בניסוי שערכתם בחלק ב?" 
         options={[
           "כמות המים המזוקקים שהוספה למבחנת הבקרה במטרה לשמור על נפח קבוע.",
@@ -608,6 +634,8 @@ const PartB = () => {
 
       <MultipleChoiceQnA 
         qNum="6. ב" 
+        points={5}
+        onAnswer={onAnswer}
         question="מדוע מדידת משך זמן הציפה היא דרך מתאימה למדידת המשתנה התלוי?" 
         options={[
           "הדסקית מתפרקת לאיטה במהלך הניסוי וצפה רק כשהיא הופכת קלה מספיק לשם כך.",
@@ -621,6 +649,8 @@ const PartB = () => {
 
       <MultipleChoiceQnA 
         qNum="7." 
+        points={6}
+        onAnswer={onAnswer}
         question="על סמך המידע על השפעת המלח נתרן כלורי על חלבונים (לידיעתכם 1), מהו ההסבר לתוצאות הניסוי?" 
         options={[
           "במבחנה ד' (0% מלח ומים) הדסקית לא צפה כלל מכיוון שהמלח הוא הגורם המרכזי שמזרז את התגובה הכימית של פירוק מי החמצן.",
@@ -634,6 +664,8 @@ const PartB = () => {
 
       <MultipleChoiceQnA 
         qNum="8. א" 
+        points={4}
+        onAnswer={onAnswer}
         question="הטיפול שנבדק במבחנה ד הוא טיפול בקרה. מהי החשיבות של טיפול הבקרה בניסוי זה?" 
         options={[
           "להוכיח שהציפה של הדסקית מושפעת גם מהימצאות מי חמצן בתמיסה.",
@@ -649,6 +681,8 @@ const PartB = () => {
 
       <MultipleChoiceQnA 
         qNum="8. ב" 
+        points={5}
+        onAnswer={onAnswer}
         question="בניסוי שערכתם בחלק ב יש טיפול בקרה נוסף. מהו טיפול הבקרה הנוסף? מדוע חשוב לכלול גם אותו בניסוי זה?" 
         options={[
           "מבחנה ג' (4% מלח). היא מהווה בקרה משום שהיא מציגה את מצב העקה הקיצוני ביותר שיש להשוות אליו.",
@@ -662,6 +696,8 @@ const PartB = () => {
 
       <MultipleChoiceQnA 
         qNum="9. א" 
+        points={4}
+        onAnswer={onAnswer}
         question="אילו גורמים נשמרו קבועים בניסוי שערכתם?" 
         options={[
           "ריכוז המלח בתמיסת ההשריה והנפח המדויק של המים המזוקקים במבחנות.",
@@ -675,6 +711,8 @@ const PartB = () => {
 
       <MultipleChoiceQnA 
         qNum="9. ב" 
+        points={4}
+        onAnswer={onAnswer}
         question="הסבירו מדוע היה חשוב שטמפרטורת החדר תישאר קבועה בניסוי שערכתם." 
         options={[
           "נפח הנוזל במבחנה נוטה להשתנות בעקבות טמפרטורה ולכן יש לקבע אותה בניסוי.",
@@ -690,7 +728,7 @@ const PartB = () => {
 };
 
 // --- Part C Component ---
-const PartC = () => {
+const PartC = ({ onAnswer }) => {
   return (
     <div className="mb-12">
       <h2 className="text-xl md:text-2xl font-bold mb-4 text-amber-900 border-b-4 border-amber-200 pb-2">חלק ג' - התאמות של צמח היבלית</h2>
@@ -743,6 +781,8 @@ const PartC = () => {
 
       <MultipleChoiceQnA 
         qNum="10. א" 
+        points={4}
+        onAnswer={onAnswer}
         question="איזה מסיח מתאר בצורה הטובה ביותר את התוצאות המוצגות בטבלה 3?" 
         options={[
           "בזן א' הריכוז נשאר נמוך וקבוע, בעוד שבזן ב' חלה עלייה חדה החל מ-0.7% מלח.",
@@ -756,6 +796,8 @@ const PartC = () => {
 
       <MultipleChoiceQnA 
         qNum="10. ב" 
+        points={4}
+        onAnswer={onAnswer}
         question="איזה סוג גרף מתאים ביותר להצגת נתוני טבלה 3?" 
         options={[
           "דיאגרמת עמודות, כי אלו קבוצות שונות.", 
@@ -784,19 +826,18 @@ const PartC = () => {
               השפעת ריכוזי מלח על קצב פעילות קטלאז בשני זנים של יבלית
             </text>
             
-            {/* מקרא מסודר מימין לשמאל והוזז מחוץ לקווי הגרף */}
-            <g transform="translate(520, 30)">
-              <rect x="0" y="0" width="105" height="70" fill="white" stroke="#ccc" rx="4"/>
+            {/* מקרא מסודר מימין לשמאל בתוך הקופסה */}
+            <g transform="translate(540, 20)">
+              <rect x="0" y="0" width="90" height="65" fill="white" stroke="#ccc" rx="4"/>
+              <text x="80" y="22" fontSize="13" fontWeight="bold" textAnchor="end" fill="#333">מקרא:</text>
               
-              <text x="80" y="22" fontSize="13" fontWeight="bold" textAnchor="middle" fill="#333" style={{ direction: 'rtl', unicodeBidi: 'bidi-override' }}>מקרא:</text>
+              <text x="80" y="42" fontSize="13" fill="#333" textAnchor="end">זן א'</text>
+              <path d="M 10 38 L 35 38" stroke="#d97706" strokeWidth="2" strokeDasharray="5,5" />
+              <circle cx="22.5" cy="38" r="4" fill="#fef3c7" stroke="#d97706" strokeWidth="2" />
               
-              <text x="85" y="44" fontSize="13" fill="#333" textAnchor="end" style={{ direction: 'rtl', unicodeBidi: 'bidi-override' }}>זן א'</text>
-              <path d="M 15 40 L 45 40" stroke="#d97706" strokeWidth="2" strokeDasharray="5,5" />
-              <circle cx="30" cy="40" r="4" fill="#fef3c7" stroke="#d97706" strokeWidth="2" />
-              
-              <text x="85" y="62" fontSize="13" fill="#333" textAnchor="end" style={{ direction: 'rtl', unicodeBidi: 'bidi-override' }}>זן ב'</text>
-              <path d="M 15 58 L 45 58" stroke="#78350f" strokeWidth="2" />
-              <circle cx="30" cy="58" r="4" fill="#78350f" />
+              <text x="80" y="58" fontSize="13" fill="#333" textAnchor="end">זן ב'</text>
+              <path d="M 10 54 L 35 54" stroke="#78350f" strokeWidth="2" />
+              <circle cx="22.5" cy="54" r="4" fill="#78350f" />
             </g>
 
             <g stroke="#e5e7eb" strokeWidth="1">
@@ -849,10 +890,20 @@ const PartC = () => {
         </div>
       </div>
 
-      <MultipleChoiceQnA qNum="11. א" question="על סמך הנתונים, איזה זן יבלית מותאם לגידול בתנאי מליחות גבוהים (0.7% ומעלה)?" options={["אף אחד מהזנים.", "שני הזנים באופן זהה.", "זן ב' מותאם, זן א' לא.", "זן א' מותאם, זן ב' לא."]} correctAnswerIndex={3} explanation="זן א' מצליח לשמור על פעילות אנזימטית גבוהה יחסית גם בריכוזי מלח גבוהים." />
+      <MultipleChoiceQnA 
+        qNum="11. א" 
+        points={5}
+        onAnswer={onAnswer}
+        question="על סמך הנתונים, איזה זן יבלית מותאם לגידול בתנאי מליחות גבוהים (0.7% ומעלה)?" 
+        options={["אף אחד מהזנים.", "שני הזנים באופן זהה.", "זן ב' מותאם, זן א' לא.", "זן א' מותאם, זן ב' לא."]} 
+        correctAnswerIndex={3} 
+        explanation="זן א' מצליח לשמור על פעילות אנזימטית גבוהה יחסית גם בריכוזי מלח גבוהים." 
+      />
       
       <MultipleChoiceQnA 
         qNum="11. ב" 
+        points={5}
+        onAnswer={onAnswer}
         question="איזה נימוק מסביר בצורה הטובה ביותר את הקביעה שלכם?" 
         options={[
           "בניסוי 1 זן א' הראה עלייה במי חמצן, מה שמעיד על התאמה.",
@@ -866,6 +917,8 @@ const PartC = () => {
 
       <MultipleChoiceQnA 
         qNum="12. א" 
+        points={5}
+        onAnswer={onAnswer}
         question="היעזרו בתשובתכם על שאלה 7, מהי הסיבה להבדל בין תוצאות הניסוי שערכתם בחלק ב ובין התוצאות שהתקבלו בנוגע לזן המותאם בניסוי 2 של החוקרים?" 
         options={[
           "בעדשים המלח חדר ופגע באנזים, בעוד שביבלית זן א' ייתכן שיש מנגנון המונע כניסת מלח לתא או שהאנזים עמיד.",
@@ -879,6 +932,8 @@ const PartC = () => {
 
       <MultipleChoiceQnA 
         qNum="12. ב" 
+        points={6}
+        onAnswer={onAnswer}
         question="איזו השפעה נוספת של מלח המצוי בקרקע יש על צמחים, מלבד מה שרשום בלידיעתכם 1?" 
         options={[
           "המלח מעלה בצורה משמעותית את טמפרטורת הקרקע במהלך שעות היום, מה שגורם לשריפת השורשים ולהפסקת הצמיחה.",
@@ -893,11 +948,68 @@ const PartC = () => {
   );
 };
 
+// --- Score Summary Component ---
+const ScoreSummary = ({ scores, totalQuestions }) => {
+  const answered = Object.keys(scores).length;
+  const totalScore = Object.values(scores).reduce((acc, curr) => acc + (curr.isCorrect ? curr.points : 0), 0);
+  const totalPossible = 100;
+
+  return (
+    <div className="bg-white border-4 border-amber-200 p-6 md:p-10 rounded-2xl shadow-lg mt-12 text-center relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 via-amber-500 to-lime-500"></div>
+      <h2 className="text-2xl md:text-3xl font-black text-amber-900 mb-4">סיכום ציון המעבדה</h2>
+      
+      <div className="flex flex-col items-center justify-center my-6">
+        <div className="text-6xl md:text-7xl font-black text-stone-800 drop-shadow-sm mb-2">{totalScore}</div>
+        <div className="text-lg md:text-xl font-medium text-stone-500">מתוך {totalPossible} נקודות</div>
+      </div>
+
+      <p className="text-stone-700 font-medium mb-4 text-base md:text-lg">
+        ענית על <span className="font-bold text-amber-600">{answered}</span> מתוך <span className="font-bold">{totalQuestions}</span> שאלות במעבדה.
+      </p>
+
+      {answered < totalQuestions && (
+        <p className="text-rose-600 text-sm md:text-base font-bold bg-rose-50 p-3 rounded-lg inline-block border border-rose-200">
+          כדי לראות את הציון הסופי והמדויק, אנא השלם/י את כל השאלות שנותרו.
+        </p>
+      )}
+
+      {/* Progress bar */}
+      <div className="w-full bg-stone-100 rounded-full h-6 mt-6 overflow-hidden border border-stone-200 relative">
+        <div className="absolute top-0 right-0 h-full bg-stone-100 w-full"></div>
+        <div 
+          className={`absolute top-0 right-0 h-full transition-all duration-1000 ${totalScore >= 80 ? 'bg-lime-500' : totalScore >= 55 ? 'bg-amber-400' : 'bg-rose-400'}`} 
+          style={{ width: `${(totalScore / totalPossible) * 100}%` }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
 // --- Main Application ---
 const App = () => {
+  const [scores, setScores] = useState({});
+  const totalQuestions = 21; // סך כל השאלות במעבדה
+
+  const handleAnswer = (qNum, isCorrect, points) => {
+    setScores(prev => ({
+      ...prev,
+      [qNum]: { isCorrect, points }
+    }));
+  };
+
+  const currentScore = Object.values(scores).reduce((acc, curr) => acc + (curr.isCorrect ? curr.points : 0), 0);
+
   return (
-    <div className="rtl min-h-screen bg-orange-50/20 text-stone-900 font-sans p-2 md:p-6">
+    <div className="rtl min-h-screen bg-orange-50/20 text-stone-900 font-sans p-2 md:p-6 relative">
       <style>{customStyles}</style>
+      
+      {/* תגית הציון הצפה */}
+      <div className="fixed bottom-4 left-4 bg-white/95 backdrop-blur border-2 border-amber-200 p-3 rounded-xl shadow-xl z-50 flex flex-col items-center min-w-[80px]">
+        <span className="text-[10px] md:text-xs text-stone-500 font-bold mb-1 uppercase tracking-wide">ציון ביניים</span>
+        <span className="text-xl md:text-2xl font-black text-amber-700">{currentScore}</span>
+      </div>
+
       <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-amber-100">
         <header className="bg-gradient-to-l from-stone-800 via-amber-800 to-orange-700 text-white p-6 md:p-8 text-center shadow-lg">
           <h1 className="text-xl md:text-3xl font-black mb-2 tracking-tight" style={{ fontFamily: "'Rubik', sans-serif" }}>מעבדה בביולוגיה: פעילות אנזים קטלאז</h1>
@@ -905,12 +1017,13 @@ const App = () => {
         </header>
 
         <main className="p-4 md:p-8">
-          <PartA />
-          <PartB />
-          <PartC />
+          <PartA onAnswer={handleAnswer} />
+          <PartB onAnswer={handleAnswer} />
+          <PartC onAnswer={handleAnswer} />
+          <ScoreSummary scores={scores} totalQuestions={totalQuestions} />
         </main>
 
-        <footer className="bg-gradient-to-l from-stone-800 via-amber-800 to-orange-700 text-white/90 p-4 text-center text-xs md:text-sm shadow-inner">
+        <footer className="bg-gradient-to-l from-stone-800 via-amber-800 to-orange-700 text-white/90 p-4 text-center text-xs md:text-sm shadow-inner mt-4">
           כל הזכויות לתוכן הבחינה שמורות למשרד החינוך | נערך על ידי רבקה פרידלנד כהן
         </footer>
       </div>
